@@ -13,24 +13,82 @@ Welcome to **Speak Easy TTS** – your playful, powerful, and easy-to-use text-t
 ## Quick Start
 
 ```bash
-npm install speak-easy
+npm install @base83/speak-easy
 ```
 
 ## Usage
 
+### Basic text-to-speech
 ```ts
-import { TtsEngine, getRandomVoice, GEMINI_TTS_VOICES, GEMINI_TTS_LANGUAGES } from 'speak-easy';
-
+import { TtsEngine } from '@base83/speak-easy';
 const engine = new TtsEngine({ apiKey: process.env.GEMINI_API_KEY, debug: true });
-
-// Basic text-to-speech
 await engine.synthesizeToFile({ text: 'Hello world!' });
+```
 
-// Feeling lucky? Try a random voice!
+### Feeling lucky? Try a random voice!
+```ts
+import { getRandomVoice } from '@base83/speak-easy';
 const randomVoice = getRandomVoice();
 await engine.synthesizeToFile({ text: 'Surprise me!', voice: randomVoice });
+```
 
-// Explore all voices and languages
+### Synthesize to buffer
+```ts
+const { buffer, voice, language } = await engine.synthesizeToBuffer({ text: 'Buffer output!' });
+// Do something fun with the buffer, like play or save it!
+```
+
+### Synthesize to stream
+```ts
+const { stream } = await engine.synthesizeToStream({ text: 'Stream output!' });
+stream.pipe(require('fs').createWriteStream('output.mp3'));
+```
+
+### Upload and use a file (multimodal magic)
+```ts
+const fileMeta = await engine.uploadFile({ file: 'audio.mp3', mimeType: 'audio/mpeg' });
+await engine.synthesizeToFile({ file: fileMeta, prompt: 'Describe this audio' });
+```
+
+### Validate voices and languages
+```ts
+import { isValidVoice, isValidLanguage } from '@base83/speak-easy';
+console.log(isValidVoice('Zephyr')); // true or false
+console.log(isValidLanguage('en-US')); // true or false
+```
+
+### Error handling
+```ts
+import { TtsEngineError } from '@base83/speak-easy';
+try {
+  await engine.synthesizeToFile({ text: '' }); // Oops, no text!
+} catch (err) {
+  if (err instanceof TtsEngineError) {
+    console.error('TTS error:', err.message, err.code, err.suggestion);
+  }
+}
+```
+
+### Using hooks and a custom logger
+```ts
+const customLogger = {
+  log: (...args) => console.log('[CUSTOM LOG]', ...args),
+  error: (...args) => console.error('[CUSTOM ERROR]', ...args),
+};
+const engineWithHooks = new TtsEngine({
+  apiKey: process.env.GEMINI_API_KEY,
+  logger: customLogger,
+  hooks: {
+    beforeSynthesize: (opts) => console.log('About to synthesize:', opts),
+    afterSynthesize: (res) => console.log('Synthesis complete:', res),
+    onError: (err) => console.error('Custom error handler:', err),
+  },
+});
+```
+
+### Explore all voices and languages
+```ts
+import { GEMINI_TTS_VOICES, GEMINI_TTS_LANGUAGES } from '@base83/speak-easy';
 console.log('Voices:', GEMINI_TTS_VOICES);
 console.log('Languages:', GEMINI_TTS_LANGUAGES);
 ```
