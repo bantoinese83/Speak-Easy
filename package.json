@@ -1,0 +1,49 @@
+{
+  "name": "speak-easy",
+  "version": "1.0.0",
+  "description": "The most developer-friendly Gemini AI TTS engine for Node.js and TypeScript.",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "tts",
+    "text-to-speech",
+    "gemini",
+    "ai",
+    "voice",
+    "audio",
+    "typescript",
+    "nodejs",
+    "npm-package"
+  ],
+  "author": "Your Name <your@email.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/speak-easy.git"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --out-dir dist",
+    "test": "echo 'No tests yet'",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@google/genai": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.5",
+    "prettier": "^3.6.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.5.4"
+  }
+}
