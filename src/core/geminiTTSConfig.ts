@@ -1,6 +1,16 @@
 // src/core/geminiTTSConfig.ts
 
-export const GEMINI_TTS_VOICES = [
+/**
+ * 🚀 GEMINI_TTS_VOICES: The full cast of voice personalities for your TTS adventures!
+ * Each voice has a unique name and a descriptive tag to help you find the perfect match.
+ * These are the officially supported voice options for the Gemini TTS model.
+ *
+ * @example
+ * import { GEMINI_TTS_VOICES } from '@base83/speak-easy';
+ * console.log('Available voices:', GEMINI_TTS_VOICES.map(v => v.name));
+ * // Output: ['Zephyr', 'Puck', ...]
+ */
+export const GEMINI_TTS_VOICES: ReadonlyArray<{ name: string; description: string }> = [
   { name: 'Zephyr', description: 'Bright' },
   { name: 'Puck', description: 'Upbeat' },
   { name: 'Charon', description: 'Informative' },
@@ -33,7 +43,17 @@ export const GEMINI_TTS_VOICES = [
   { name: 'Sulafat', description: 'Warm' },
 ] as const;
 
-export const GEMINI_TTS_LANGUAGES = [
+/**
+ * 🌍 GEMINI_TTS_LANGUAGES: Supported languages for your global TTS journey!
+ * Each entry includes a human-readable name and its corresponding BCP-47 language code.
+ * Use these codes to synthesize speech in different languages.
+ *
+ * @example
+ * import { GEMINI_TTS_LANGUAGES } from '@base83/speak-easy';
+ * const spanish = GEMINI_TTS_LANGUAGES.find(l => l.language.includes('Spanish'));
+ * console.log(spanish?.code); // 'es-US'
+ */
+export const GEMINI_TTS_LANGUAGES: ReadonlyArray<{ language: string; code: string }> = [
   { language: 'Arabic (Egyptian)', code: 'ar-EG' },
   { language: 'German (Germany)', code: 'de-DE' },
   { language: 'English (US)', code: 'en-US' },
@@ -60,15 +80,46 @@ export const GEMINI_TTS_LANGUAGES = [
   { language: 'Telugu (India)', code: 'te-IN' },
 ] as const;
 
-export function isValidVoice(voice: string): boolean {
-  return GEMINI_TTS_VOICES.some((v) => v.name === voice);
-}
+/**
+ * Checks if a given voice name is a valid and supported option.
+ * This is useful for validating user input before making an API call.
+ *
+ * @param voice - The name of the voice to check (case-sensitive).
+ * @returns `true` if the voice is in `GEMINI_TTS_VOICES`, `false` otherwise.
+ * @example
+ * import { isValidVoice } from '@base83/speak-easy';
+ * console.log(isValidVoice('Zephyr')); // true
+ * console.log(isValidVoice('InvalidVoice')); // false
+ */
+export const isValidVoice = (voice: string): boolean =>
+  GEMINI_TTS_VOICES.some((v) => v.name === voice);
 
-export function isValidLanguage(code: string): boolean {
-  return GEMINI_TTS_LANGUAGES.some((l) => l.code === code);
-}
+/**
+ * Checks if a given language code is a valid and supported option.
+ *
+ * @param code - The BCP-47 language code to check (case-sensitive).
+ * @returns `true` if the code is in `GEMINI_TTS_LANGUAGES`, `false` otherwise.
+ * @example
+ * import { isValidLanguage } from '@base83/speak-easy';
+ * console.log(isValidLanguage('en-US')); // true
+ * console.log(isValidLanguage('xx-XX')); // false
+ */
+export const isValidLanguage = (code: string): boolean =>
+  GEMINI_TTS_LANGUAGES.some((l) => l.code === code);
 
-export function getRandomVoice(): string {
+/**
+ * 🎲 getRandomVoice: Feeling lucky? Get a random voice from the cast!
+ * A fun utility to add variety to your application's speech output.
+ *
+ * @returns The name of a randomly selected voice as a string.
+ * @example
+ * import { getRandomVoice } from '@base83/speak-easy';
+ * const randomVoice = getRandomVoice();
+ * console.log(`Today's voice is: ${randomVoice}`);
+ */
+export const getRandomVoice = (): string => {
   const idx = Math.floor(Math.random() * GEMINI_TTS_VOICES.length);
   return GEMINI_TTS_VOICES[idx].name;
-}
+};
+
+// 🌟 Go forth and synthesize with style! 🌟

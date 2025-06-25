@@ -1,99 +1,133 @@
 # Speak Easy TTS 🎤✨
 
-Welcome to **Speak Easy TTS** – your playful, powerful, and easy-to-use text-to-speech engine powered by Gemini AI!
+Welcome to **Speak Easy TTS** – your playful, powerful, and easy-to-use text-to-speech engine powered by Gemini AI! This package is designed for a top-tier developer experience with a modern, fully-typed API, robust error handling, and fun, expressive features.
 
 ## Features
-- 🚀 Modern TypeScript API with explicit types and ergonomic exports
-- 🎭 Tons of fun, expressive voices (see `GEMINI_TTS_VOICES`)
-- 🌍 Multilingual support (see `GEMINI_TTS_LANGUAGES`)
-- 🧑‍💻 Developer-friendly docs, types, and playful error messages
-- 🎉 Playful logs and engaging usage examples
-- 🔥 Exports for everything you need: `TtsEngine`, `getRandomVoice`, `isValidVoice`, and more
+- 🚀 **Modern TypeScript API**: Fully-typed and designed for an ergonomic developer experience.
+- 🎭 **Expressive Voices**: A whole cast of fun voices to bring your text to life.
+- 🌍 **Multilingual Support**: Synthesize speech in numerous languages.
+- 🧑‍💻 **Developer-Friendly Docs**: Comprehensive JSDoc and clear examples.
+- 🎉 **Playful & Powerful**: Fun error messages, helpful logs, and robust features like caching and a CLI.
+- 🔥 **Everything Exported**: All the types and helpers you need are ready to import.
 
-## Quick Start
+## Table of Contents
 
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [CLI Usage](#cli-usage)
+- [Library Usage](#library-usage)
+  - [Basic Synthesis](#basic-synthesis)
+  - [Using a Random Voice](#using-a-random-voice)
+  - [Synthesizing to a Buffer or Stream](#synthesizing-to-a-buffer-or-stream)
+  - [Using the Cache](#using-the-cache)
+  - [Multimodal Synthesis](#multimodal-synthesis)
+  - [Advanced Configuration](#advanced-configuration)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Installation
+
+For the CLI:
+```bash
+npm install -g @base83/speak-easy
+```
+For the library:
 ```bash
 npm install @base83/speak-easy
 ```
 
-## Usage
+## Quick Start
 
-### Basic text-to-speech
+```bash
+# Ensure your GEMINI_API_KEY is set in your environment
+export GEMINI_API_KEY="YOUR_API_KEY"
+
+# Run from the CLI
+speak-easy "Hello from Speak Easy!"
+```
+
+## CLI Usage
+
+### From the Command Line (CLI)
+
+```bash
+# Basic synthesis
+speak-easy "Hello from the CLI!"
+
+# With options
+speak-easy "Bonjour le monde!" --voice Puck --language fr-FR --output bonjour.mp3
+
+# Using cache for repeated requests
+speak-easy "This will be cached" --use-cache
+```
+
+### As a Library
+
 ```ts
 import { TtsEngine } from '@base83/speak-easy';
 const engine = new TtsEngine({ apiKey: process.env.GEMINI_API_KEY, debug: true });
 await engine.synthesizeToFile({ text: 'Hello world!' });
 ```
 
-### Feeling lucky? Try a random voice!
+## Library Usage
+
+### Basic Synthesis
 ```ts
-import { getRandomVoice } from '@base83/speak-easy';
-const randomVoice = getRandomVoice();
-await engine.synthesizeToFile({ text: 'Surprise me!', voice: randomVoice });
+import { TtsEngine } from '@base83/speak-easy';
+const engine = new TtsEngine({ apiKey: process.env.GEMINI_API_KEY });
+const { filePath } = await engine.synthesizeToFile({ text: 'Hello from the library!' });
+console.log(`Audio saved to: ${filePath}`);
 ```
 
-### Synthesize to buffer
+### Using a Random Voice
 ```ts
-const { buffer, voice, language } = await engine.synthesizeToBuffer({ text: 'Buffer output!' });
-// Do something fun with the buffer, like play or save it!
+import { TtsEngine, getRandomVoice } from '@base83/speak-easy';
+const engine = new TtsEngine({ apiKey: process.env.GEMINI_API_KEY });
+const voice = getRandomVoice();
+await engine.synthesizeToFile({ text: 'A random voice is fun!', voice });
 ```
 
-### Synthesize to stream
+### Synthesizing to a Buffer or Stream
 ```ts
-const { stream } = await engine.synthesizeToStream({ text: 'Stream output!' });
-stream.pipe(require('fs').createWriteStream('output.mp3'));
+// To Buffer
+const { buffer } = await engine.synthesizeToBuffer({ text: 'This is a buffer.' });
+
+// To Stream
+const { stream } = await engine.synthesizeToStream({ text: 'This is a stream.' });
+stream.pipe(process.stdout);
 ```
 
-### Upload and use a file (multimodal magic)
+### Using the Cache
+Enable caching to save time and API calls on repeated requests.
 ```ts
-const fileMeta = await engine.uploadFile({ file: 'audio.mp3', mimeType: 'audio/mpeg' });
-await engine.synthesizeToFile({ file: fileMeta, prompt: 'Describe this audio' });
+const engine = new TtsEngine({ apiKey: process.env.GEMINI_API_KEY, useCache: true });
+await engine.synthesizeToFile({ text: 'This will be cached.' });
+await engine.synthesizeToFile({ text: 'This will be cached.' }); // This one will be much faster!
 ```
 
-### Validate voices and languages
+### Multimodal Synthesis
+Use files as prompts for synthesis.
 ```ts
-import { isValidVoice, isValidLanguage } from '@base83/speak-easy';
-console.log(isValidVoice('Zephyr')); // true or false
-console.log(isValidLanguage('en-US')); // true or false
+const fileMeta = await engine.uploadFile({ file: 'image.png', mimeType: 'image/png' });
+await engine.synthesizeToFile({ file: fileMeta, prompt: 'Describe this image for me.' });
 ```
 
-### Error handling
+### Advanced Configuration
+Customize the engine with hooks, a default voice, and your own logger.
 ```ts
-import { TtsEngineError } from '@base83/speak-easy';
-try {
-  await engine.synthesizeToFile({ text: '' }); // Oops, no text!
-} catch (err) {
-  if (err instanceof TtsEngineError) {
-    console.error('TTS error:', err.message, err.code, err.suggestion);
-  }
-}
-```
-
-### Using hooks and a custom logger
-```ts
-const customLogger = {
-  log: (...args) => console.log('[CUSTOM LOG]', ...args),
-  error: (...args) => console.error('[CUSTOM ERROR]', ...args),
-};
-const engineWithHooks = new TtsEngine({
+const engine = new TtsEngine({
   apiKey: process.env.GEMINI_API_KEY,
-  logger: customLogger,
+  defaultVoice: 'Puck',
+  useCache: true,
   hooks: {
-    beforeSynthesize: (opts) => console.log('About to synthesize:', opts),
-    afterSynthesize: (res) => console.log('Synthesis complete:', res),
-    onError: (err) => console.error('Custom error handler:', err),
-  },
+    beforeSynthesize: (opts) => console.log('Starting job...'),
+    afterSynthesize: (res) => console.log(`Finished with ${res.voice}!`),
+  }
 });
 ```
 
-### Explore all voices and languages
-```ts
-import { GEMINI_TTS_VOICES, GEMINI_TTS_LANGUAGES } from '@base83/speak-easy';
-console.log('Voices:', GEMINI_TTS_VOICES);
-console.log('Languages:', GEMINI_TTS_LANGUAGES);
-```
-
-## API Highlights
+## API Reference
 
 - **TtsEngine**: Main class for all TTS magic
 - **getRandomVoice()**: Get a random voice for fun variety
@@ -112,8 +146,8 @@ Set GEMINI_API_KEY in your environment or pass it to the TtsEngine constructor. 
 
 ## Pro Tips
 - Use the `debug: true` option for extra fun logs.
-- Try different voices and languages for unique results.
-- Check out the code for more playful comments and tips!
+- The `synthesizeToFile` method will auto-generate a filename if you don't provide one.
+- Check out the full JSDoc in your editor for detailed info on every function and type.
 
 ## Contributing
 PRs and ideas welcome! Let's make TTS more fun for everyone.

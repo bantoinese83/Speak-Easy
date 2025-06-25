@@ -1,18 +1,24 @@
 // Main entry point for speak-easy
 
 /**
- * Main class for text-to-speech synthesis using Gemini AI.
- * Supports text, file, and multimodal prompts.
- * Includes file upload, management, and advanced TTS features.
+ * 🎉 Welcome to Speak Easy TTS! 🎉
+ *
+ * This is your gateway to playful, powerful, and easy text-to-speech with Gemini AI.
+ *
  * @example
  *   import { TtsEngine } from 'speak-easy';
  *   const engine = new TtsEngine({ apiKey: process.env.GEMINI_API_KEY, debug: true });
- *   // Text-to-speech
  *   await engine.synthesizeToFile({ text: 'Hello world!' });
- *   // File upload
- *   const fileMeta = await engine.uploadFile({ file: 'audio.mp3', mimeType: 'audio/mpeg' });
- *   // Multimodal TTS
- *   await engine.synthesizeToFile({ file: fileMeta, prompt: 'Describe this audio' });
+ *
+ *   // Feeling lucky? Try a random voice!
+ *   const randomVoice = getRandomVoice();
+ *   await engine.synthesizeToFile({ text: 'Surprise me!', voice: randomVoice });
+ *
+ *   // Explore all voices and languages
+ *   console.log('Voices:', GEMINI_TTS_VOICES);
+ *   console.log('Languages:', GEMINI_TTS_LANGUAGES);
+ *
+ *   // For more fun, check the README!
  */
 export {
   TtsEngine,
@@ -40,9 +46,14 @@ export { GEMINI_TTS_LANGUAGES, isValidLanguage } from './core/geminiTTSConfig.js
 
 /**
  * Default export for convenience (TtsEngine).
+ * @example
+ *   import TtsEngine from 'speak-easy';
+ *   const engine = new TtsEngine(process.env.GEMINI_API_KEY);
  */
 import { TtsEngine } from './core/ttsEngine.js';
 export default TtsEngine;
+
+// 🚀 Go forth and synthesize with style! 🚀
 
 /**
  * TtsEngine: Main class for text-to-speech synthesis using Gemini AI.
@@ -53,8 +64,18 @@ export default TtsEngine;
 
 /**
  * TtsEngineError: Custom error class for TTS errors.
+ * @example
+ *   const engine = new TtsEngine(process.env.GEMINI_API_KEY);
+ *   try {
+ *     await engine.synthesizeToFile({ text: 'Hello world!' });
+ *   } catch (error) {
+ *     if (error instanceof TtsEngineError) {
+ *       console.error('TTS error:', error.message);
  */
 
 /**
  * TtsOptions: Options for TTS synthesis (text, voice, language, fileName).
+ * @example
+ *   const engine = new TtsEngine(process.env.GEMINI_API_KEY);
+ *   await engine.synthesizeToFile({ text: 'Hello world!', voice: 'Zephyr', language: 'en-US', fileName: 'hello.mp3' });
  */
